@@ -1,5 +1,7 @@
 # apache-airflow-providers-teradata
 
+![Upload Python Package](https://github.com/flolas/apache-airflow-providers-teradata/workflows/Upload%20Python%20Package/badge.svg)
+
 Release: 2020.9.30
 
 **Table of contents**
