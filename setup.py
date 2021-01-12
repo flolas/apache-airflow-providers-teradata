@@ -2,7 +2,7 @@
 
 """The setup script."""
 
-from setuptools import setup, find_packages
+from setuptools import setup, find_namespace_packages
 
 with open('README.md') as readme_file:
     readme = readme_file.read()
@@ -45,7 +45,7 @@ setup(
     include_package_data=True,
     keywords=['airflow', 'teradata'],
     name='apache-airflow-providers-teradata',
-    packages=find_packages(include=['airflow.providers.teradata', 'airflow.providers.teradata.*']),
+    packages=find_namespace_packages(include=['airflow.providers.teradata', 'airflow.providers.teradata.*']),
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
