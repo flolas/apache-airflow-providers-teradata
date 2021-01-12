@@ -19,7 +19,7 @@ def get_provider_info():
         'package-name': 'apache-airflow-providers-teradata',
         'name': 'Teradata',
         'description': 'Teradata:\n\n FastLoad, FastExport and BTEQ',
-        'versions': ['0.1.7'],
+        'versions': ['0.1.8'],
         'integrations':[
             {
                 'integration-name': 'Teradata Tools and Utilities (TTU)',
@@ -46,7 +46,7 @@ def get_provider_info():
                 'integration-name': 'Teradata FastLoad',
                 'python-modules': ['airflow.providers.teradata.operators.fastload'],
             },
-        ]
+        ],
         'hook-class-names': [
             'airflow.providers.teradata.hooks.ttu.TtuHook',
         ],
