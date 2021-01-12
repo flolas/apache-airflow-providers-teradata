@@ -34,11 +34,6 @@ setup(
         'Programming Language :: Python :: 3.8',
     ],
     description="Teradata Tools and Utils wrapper for Apache Airflow 2.0/1.1x.",
-    entry_points={
-        'console_scripts': [
-            'apache_airflow_providers_teradata=apache_airflow_providers_teradata.cli:main',
-        ],
-    },
     install_requires=requirements,
     license="MIT license",
     long_description=readme + '\n\n' + history,
