@@ -4,15 +4,17 @@
 
 from setuptools import setup, find_packages
 
-with open('README.rst') as readme_file:
+with open('README.md') as readme_file:
     readme = readme_file.read()
 
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = ['Click>=7.0', ]
+requirements = ['Click>=7.0',
+                'apache-airflow>=2.0.0a0',
+               ]
 
-setup_requirements = ['pytest-runner', ]
+setup_requirements = ['pytest-runner', 'setuptools', 'wheel'],
 
 test_requirements = ['pytest>=3', ]
 
@@ -41,9 +43,9 @@ setup(
     license="MIT license",
     long_description=readme + '\n\n' + history,
     include_package_data=True,
-    keywords='apache_airflow_providers_teradata',
-    name='apache_airflow_providers_teradata',
-    packages=find_packages(include=['apache_airflow_providers_teradata', 'apache_airflow_providers_teradata.*']),
+    keywords=['airflow', 'teradata'],
+    name='apache-airflow-providers-teradata',
+    packages=find_packages(include=['airflow.providers.teradata', 'airflow.providers.teradata.*']),
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
