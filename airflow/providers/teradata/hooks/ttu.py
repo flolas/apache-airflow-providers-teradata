@@ -37,12 +37,19 @@ class TtuHook(BaseHook, LoggingMixin):
     conn_name_attr = 'ttu_conn_id'
     default_conn_name = 'ttu_default'
     conn_type = 'ttu'
-    hook_name = 'Ttu'
+    hook_name = 'TTU'
 
     def __init__(self, ttu_conn_id: str = 'ttu_default') -> None:
         super().__init__()
         self.ttu_conn_id = ttu_conn_id
         self.conn = None
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+        if self.conn is not None:
+            self.close_conn()
 
     def get_conn(self) -> dict:
         if not self.conn:
@@ -61,6 +68,13 @@ class TtuHook(BaseHook, LoggingMixin):
                 sp = None
                 )
         return self.conn
+
+    def close_conn(self):
+        """
+        Closes the connection. An error will occur if the
+        connection wasn't ever opened.
+        """
+        self.conn = None
 
     def execute_bteq(self, bteq, xcom_push_flag=False):
         """

@@ -45,6 +45,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/flolas/apache_airflow_providers_teradata',
-    version='0.1.8',
+    version='0.1.10',
     zip_safe=False,
 )
