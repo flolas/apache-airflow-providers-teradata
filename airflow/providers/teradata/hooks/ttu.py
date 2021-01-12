@@ -34,6 +34,10 @@ class TtuHook(BaseHook, LoggingMixin):
 
     extras example: ``{"bteq_quit_zero":true, "bteq_session_encoding";"UTF8"}``
     """
+    conn_name_attr = 'ttu_conn_id'
+    default_conn_name = 'ttu_default'
+    conn_type = 'ttu'
+    hook_name = 'Ttu'
 
     def __init__(self, ttu_conn_id: str = 'ttu_default') -> None:
         super().__init__()
