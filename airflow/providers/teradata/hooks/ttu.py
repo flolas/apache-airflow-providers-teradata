@@ -25,7 +25,7 @@ from tempfile import gettempdir, NamedTemporaryFile, TemporaryDirectory
 from airflow import configuration as conf
 from airflow.exceptions import AirflowException
 from airflow.utils.log.logging_mixin import LoggingMixin
-from airflow.hooks.base_hook import BaseHook
+from airflow.hooks.base import BaseHook
 
 class TtuHook(BaseHook, LoggingMixin):
     """
