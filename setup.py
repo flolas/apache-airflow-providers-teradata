@@ -4,7 +4,7 @@
 
 from setuptools import setup, find_namespace_packages
 
-with open('README.md') as readme_file:
+with open('README.rst') as readme_file:
     readme = readme_file.read()
 
 with open('HISTORY.rst') as history_file:
@@ -50,6 +50,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/flolas/apache_airflow_providers_teradata',
-    version='0.1.2',
+    version='0.1.0',
     zip_safe=False,
 )
