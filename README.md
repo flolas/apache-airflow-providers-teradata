@@ -1,43 +1,4 @@
-
-<!--
- Licensed to the Apache Software Foundation (ASF) under one
- or more contributor license agreements.  See the NOTICE file
- distributed with this work for additional information
- regarding copyright ownership.  The ASF licenses this file
- to you under the Apache License, Version 2.0 (the
- "License"); you may not use this file except in compliance
- with the License.  You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing,
- software distributed under the License is distributed on an
- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- KIND, either express or implied.  See the License for the
- specific language governing permissions and limitations
- under the License.
- -->
-
-
-=================================
-apache-airflow-providers-teradata
-=================================
-
-
-.. image:: https://img.shields.io/pypi/v/apache_airflow_providers_teradata.svg
-        :target: https://pypi.python.org/pypi/apache_airflow_providers_teradata
-
-.. image:: https://img.shields.io/travis/flolas/apache_airflow_providers_teradata.svg
-        :target: https://travis-ci.com/flolas/apache_airflow_providers_teradata
-
-.. image:: https://readthedocs.org/projects/apache-airflow-providers-teradata/badge/?version=latest
-        :target: https://apache-airflow-providers-teradata.readthedocs.io/en/latest/?badge=latest
-        :alt: Documentation Status
-
-
-.. image:: https://pyup.io/repos/github/flolas/apache_airflow_providers_teradata/shield.svg
-     :target: https://pyup.io/repos/github/flolas/apache_airflow_providers_teradata/
-     :alt: Updates
+# apache-airflow-providers-teradata
 
 Release: 2020.9.30
 
