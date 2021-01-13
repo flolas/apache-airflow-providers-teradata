@@ -24,7 +24,7 @@ def get_provider_info():
             {
                 'integration-name': 'Teradata Tools and Utilities (TTU)',
                 'external-doc-url': 'https://downloads.teradata.com/download/tools/teradata-tools-and-utilities-linux-installation-package-0',
-                'tags': ['ttu'],
+                'tags': ['software'],
             }
 
         ],
