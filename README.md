@@ -16,7 +16,7 @@ None
 None
 
 ## Third-party requirements
-This package uses BTEQ, MLOAD and TPT propietary binaries from @Teradata
+This package uses BTEQ, MLOAD and TPT propietary binaries from Teradata
 
 * [Teradata Tools and Utilities](https://downloads.teradata.com/download/tools/teradata-tools-and-utilities-linux-installation-package-0) (Release 17.00.15.00)
 
