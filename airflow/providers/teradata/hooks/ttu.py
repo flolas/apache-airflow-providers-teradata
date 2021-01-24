@@ -112,7 +112,7 @@ class TtuHook(BaseHook, LoggingMixin):
                 for line in iter(conn['sp'].stdout.readline, b''):
                     line = line.decode(conn['console_output_encoding']).strip()
                     self.log.info(line)
-                    if "Failure" or "BTEQ exiting due to EOF on stdin" in line:
+                    if "Failure" in line:
                         #Just save the last failure
                         failure_line = line
                 conn['sp'].wait()
