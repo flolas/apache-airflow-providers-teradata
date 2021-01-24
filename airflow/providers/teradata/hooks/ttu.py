@@ -98,6 +98,7 @@ class TtuHook(BaseHook, LoggingMixin):
                 self.log.debug(bteq_file)
                 tmpfile.write(bytes(bteq_file,'UTF8'))
                 tmpfile.flush()
+                tmpfile.seek(0)
 
                 conn['sp'] = subprocess.Popen(['bteq'],
                     stdin=tmpfile,
