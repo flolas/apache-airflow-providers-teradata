@@ -35,6 +35,6 @@ setup(
     packages=find_namespace_packages(include=['airflow.providers.teradata', 'airflow.providers.teradata.*']),
     setup_requires=['setuptools', 'wheel'],
     url='https://github.com/flolas/apache_airflow_providers_teradata',
-    version='1.0.3',
+    version='1.0.4',
     zip_safe=False,
 )
