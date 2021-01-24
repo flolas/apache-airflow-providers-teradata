@@ -65,7 +65,6 @@ class TtuHook(BaseHook, LoggingMixin):
                 bteq_session_encoding=extras.get('bteq_session_encoding', 'ASCII'),
                 bteq_output_width=extras.get('bteq_output_width', 65531),
                 bteq_quit_zero=extras.get('bteq_quit_zero', False),
-                bteq_raise_on_failure=extras.get('bteq_raise_on_failure', True),
                 sp = None
                 )
         return self.conn
@@ -109,20 +108,18 @@ class TtuHook(BaseHook, LoggingMixin):
 
                 line = ''
                 failure_line = 'unknown reasons. Please see full BTEQ Output for more details.'
-                has_failure = False
                 self.log.info("Output:")
                 for line in iter(conn['sp'].stdout.readline, b''):
                     line = line.decode(conn['console_output_encoding']).strip()
                     self.log.info(line)
                     if "Failure" or "BTEQ exiting due to EOF on stdin" in line:
                         #Just save the last failure
-                        has_failure = True
                         failure_line = line
                 conn['sp'].wait()
 
                 self.log.info("BTEQ command exited with return code {0}".format(conn['sp'].returncode))
 
-                if conn['sp'].returncode or (has_failure and conn['bteq_raise_on_failure']):
+                if conn['sp'].returncode:
                     raise AirflowException("BTEQ command exited with return code " + str(conn['sp'].returncode) + ' because of ' +
                                            failure_line)
                 if xcom_push_flag:
