@@ -65,6 +65,7 @@ class TtuHook(BaseHook, LoggingMixin):
                 bteq_session_encoding=extras.get('bteq_session_encoding', 'ASCII'),
                 bteq_output_width=extras.get('bteq_output_width', 65531),
                 bteq_quit_zero=extras.get('bteq_quit_zero', False),
+                bteq_raise_on_failure=extras.get('bteq_raise_on_failure', True),
                 sp = None
                 )
         return self.conn
@@ -120,7 +121,7 @@ class TtuHook(BaseHook, LoggingMixin):
 
                 self.log.info("BTEQ command exited with return code {0}".format(conn['sp'].returncode))
 
-                if conn['sp'].returncode or (has_failure and raise_on_failure):
+                if conn['sp'].returncode or (has_failure and conn['raise_on_failure']):
                     raise AirflowException("BTEQ command exited with return code " + str(conn['sp'].returncode) + ' because of ' +
                                            failure_line)
                 if xcom_push_flag:
