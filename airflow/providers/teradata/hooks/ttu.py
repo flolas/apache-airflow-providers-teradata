@@ -107,18 +107,20 @@ class TtuHook(BaseHook, LoggingMixin):
 
                 line = ''
                 failure_line = 'unknown reasons. Please see full BTEQ Output for more details.'
+                has_failure = False
                 self.log.info("Output:")
                 for line in iter(conn['sp'].stdout.readline, b''):
                     line = line.decode(conn['console_output_encoding']).strip()
                     self.log.info(line)
-                    if "Failure" in line:
+                    if "Failure" or "BTEQ exiting due to EOF on stdin" in line:
                         #Just save the last failure
+                        has_failure = True
                         failure_line = line
                 conn['sp'].wait()
 
                 self.log.info("BTEQ command exited with return code {0}".format(conn['sp'].returncode))
 
-                if conn['sp'].returncode:
+                if conn['sp'].returncode or (has_failure and raise_on_failure):
                     raise AirflowException("BTEQ command exited with return code " + str(conn['sp'].returncode) + ' because of ' +
                                            failure_line)
                 if xcom_push_flag:
@@ -170,7 +172,7 @@ class TtuHook(BaseHook, LoggingMixin):
         rows_error=0
         rows_duplicated=0
         for line in iter(conn['sp'].stdout.readline, b''):
-            #line = line.decode(conn['console_output_encoding']).strip()
+            line = line.decode(conn['console_output_encoding']).strip()
             self.log.info(line)
             if rows_in_error_tables_line in line:
                 # check if we have error rows
@@ -251,7 +253,7 @@ class TtuHook(BaseHook, LoggingMixin):
                 line = ''
                 error_line = 'unknown reasons. Please see full TPT Output for more details.'
                 for line in iter(conn['sp'].stdout.readline, b''):
-                    #line = line.decode(conn['console_output_encoding']).strip()
+                    line = line.decode(conn['console_output_encoding']).strip()
                     self.log.info(line)
                     if "error" in line:
                         #Just save the last error
