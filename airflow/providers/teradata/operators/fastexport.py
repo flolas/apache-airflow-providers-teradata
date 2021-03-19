@@ -40,6 +40,7 @@ class FastExportOperator(BaseOperator):
         output_file: str,
         delimiter: str = ';',
         encoding: str = 'UTF8',
+        spool_mode: str = 'SPOOL',
         xcom_push: bool = True,
         ttu_conn_id: str = 'ttu_default',
         **kwargs,
@@ -49,6 +50,7 @@ class FastExportOperator(BaseOperator):
         self.output_file = output_file
         self.delimiter = delimiter
         self.encoding = encoding
+        self.spool_mode = spool_mode
         self.xcom_push = xcom_push
         self._hook = None
         self.ttu_conn_id = ttu_conn_id
@@ -62,6 +64,7 @@ class FastExportOperator(BaseOperator):
                             output_file=self.output_file,
                             delimiter=self.delimiter,
                             encoding=self.encoding,
+                            spool_mode=self.spool_mode,
                             xcom_push_flag=self.xcom_push)
     def on_kill(self):
         self._hook.on_kill()
