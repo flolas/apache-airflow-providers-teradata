@@ -328,7 +328,7 @@ class TtuHook(BaseHook, LoggingMixin):
         return tdload_command
 
     @staticmethod
-    def _prepare_tpt_export_script(sql, output_file, encoding, delimiter, host, login, password, max_sessions, job_name= 'airflow_tptexport') -> str:
+    def _prepare_tpt_export_script(sql, output_file, encoding, delimiter, host, login, password, max_sessions, job_name= 'airflow_tptexport', spool_mode = 'SPOOL') -> str:
         """
         Prepare a tpt script file with connection parameters for exporting data to CSV
         :param sql : SQL sentence to export
@@ -340,6 +340,7 @@ class TtuHook(BaseHook, LoggingMixin):
         :param password : password for login
         :param max_sessions : how many sessions we use for loading data
         :param job_name : job name
+        :param spool_mode : ref https://docs.teradata.com/reader/tRbhWsU75TDpkqzyEZReyA/2gbczYmS~PRXRVKD0Dngtg
         """
         return '''
             USING CHARACTER SET {encoding}
@@ -369,11 +370,12 @@ class TtuHook(BaseHook, LoggingMixin):
                                     UserPassword = '{password}',
                                     SelectStmt = '{sql}',
                                     TdpId = '{host}',
-                        MaxSessions = {max_sessions}
+                                    MaxSessions = {max_sessions},
+                                    SpoolMode = '{spool_mode}'
                             )
                     );
             );
             '''.format(filename=output_file, encoding=encoding, delimiter=delimiter, username=login,
-                       password=password, sql=sql, host=host, max_sessions=max_sessions, job_name = job_name)
+                       password=password, sql=sql, host=host, max_sessions=max_sessions, job_name = job_name, spool_mode=spool_mode)
 
 
