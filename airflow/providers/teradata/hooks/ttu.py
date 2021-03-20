@@ -201,7 +201,7 @@ class TtuHook(BaseHook, LoggingMixin):
             return line
 
 
-    def execute_tptexport(self, sql, output_file, delimiter = ';', encoding='UTF8', xcom_push_flag=False, double_quote_varchar=True):
+    def execute_tptexport(self, sql, output_file, delimiter = ';', encoding='UTF8', spool_mode='SPOOL', xcom_push_flag=False, double_quote_varchar=True):
         """
         Export a table from Teradata Table using tpt binary.
         Note: The exported CSV file does not contains header row
@@ -210,6 +210,7 @@ class TtuHook(BaseHook, LoggingMixin):
         :param encoding : encoding of the file to load
         :param table : output table
         :param max_sessions : max sessions to use
+        :param spool_mode : ref https://docs.teradata.com/reader/tRbhWsU75TDpkqzyEZReyA/2gbczYmS~PRXRVKD0Dngtg
         :param xcom_push_flag: flag for pushing last line of BTEQ Log to XCom
         :param double_quote_varchar: if true, replace quotes with escaping char for Teradata SQL in TPT
         """
@@ -234,6 +235,7 @@ class TtuHook(BaseHook, LoggingMixin):
                                         output_file,
                                         encoding,
                                         delimiter,
+                                        spool_mode,
                                         conn['host'],
                                         conn['login'],
                                         conn['password'],
@@ -328,19 +330,19 @@ class TtuHook(BaseHook, LoggingMixin):
         return tdload_command
 
     @staticmethod
-    def _prepare_tpt_export_script(sql, output_file, encoding, delimiter, host, login, password, max_sessions, job_name= 'airflow_tptexport', spool_mode = 'SPOOL') -> str:
+    def _prepare_tpt_export_script(sql, output_file, encoding, delimiter, spool_mode, host, login, password, max_sessions, job_name= 'airflow_tptexport') -> str:
         """
         Prepare a tpt script file with connection parameters for exporting data to CSV
         :param sql : SQL sentence to export
         :param output_file : path to output file
-        :encoding : encoding of exported CSV file (see teradata docs for possible value)
-        :delimiter : Delimiter for exported CSV file
+        :param encoding : encoding of exported CSV file (see teradata docs for possible value)
+        :param delimiter : Delimiter for exported CSV file
+        :param spool_mode : ref https://docs.teradata.com/reader/tRbhWsU75TDpkqzyEZReyA/2gbczYmS~PRXRVKD0Dngtg
         :param host : Teradata Host
         :param login : username for login
         :param password : password for login
         :param max_sessions : how many sessions we use for loading data
         :param job_name : job name
-        :param spool_mode : ref https://docs.teradata.com/reader/tRbhWsU75TDpkqzyEZReyA/2gbczYmS~PRXRVKD0Dngtg
         """
         return '''
             USING CHARACTER SET {encoding}
