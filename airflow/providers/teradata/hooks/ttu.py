@@ -125,7 +125,7 @@ class TtuHook(BaseHook, LoggingMixin):
                 if xcom_push_flag:
                     return line
 
-    def execute_tdload(self, input_file, table, delimiter=';', working_database=None, encoding='UTF8', xcom_push_flag=False, raise_on_rows_error=False, raise_on_rows_duplicated=False):
+    def execute_tdload(self, input_file, table, delimiter=';', working_database=None, encoding='UTF8', xcom_push_flag=False, raise_on_rows_error=False, raise_on_rows_duplicated=False, debug=False, restart_limit=0):
         """
         Load a CSV file to Teradata Table (previously created) using tdload binary.
         Note: You need to strip header of the CSV. tdload only accepts rows, not header.
@@ -161,7 +161,9 @@ class TtuHook(BaseHook, LoggingMixin):
                             fload_out_path,
                             fload_checkpoint_path,
                             conn['ttu_max_sessions'],
-                            working_database
+                            working_database,
+                            debug,
+                            restart_limit
                          ),
             stdout=subprocess.PIPE, stderr=subprocess.STDOUT,preexec_fn=os.setsid)
         line = ''
@@ -229,7 +231,7 @@ class TtuHook(BaseHook, LoggingMixin):
         self.log.info("""Exporting SQL '""" + sql + """' to file """ + output_file + """ using TPT Export""")
 
         with TemporaryDirectory(prefix='airflowtmp_ttu_tpt') as tmp_dir:
-            with NamedTemporaryFile(dir=tmp_dir, prefix=str(uuid.uuid4()), mode='wb') as f:
+            with NamedTemporaryFile(dir=tmp_dir, prefix=uuid.uuid4().hex, mode='wb') as f:
                 f.write(bytes(self._prepare_tpt_export_script(
                                         sql,
                                         output_file,
@@ -247,7 +249,7 @@ class TtuHook(BaseHook, LoggingMixin):
                              "location :{0}".format(fname))
                 f.seek(0)
                 conn['sp'] = subprocess.Popen(
-                    ['tbuild', '-f', fname, 'airflow' + '_tpt_'  + str(uuid.uuid4())],
+                    ['tbuild', '-f', fname, 'airflow' + '_tpt_'  + uuid.uuid4().hex],
                     stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                     preexec_fn=os.setsid)
 
@@ -297,7 +299,7 @@ class TtuHook(BaseHook, LoggingMixin):
         return "\n".join(bteq_list)
 
     @staticmethod
-    def _prepare_tdload_command(input_file, host, login, password, encoding, table, delimiter, log_path, checkpoint_path, max_sessions, working_database, job_name= 'airflow_tdload') -> str:
+    def _prepare_tdload_command(input_file, host, login, password, encoding, table, delimiter, log_path, checkpoint_path, max_sessions, working_database, debug, restart_limit, job_name= 'airflow_tdload') -> str:
         """
         Prepare a tdload file with connection parameters for loading data from file
         :param input_file : bteq sentences to execute
@@ -323,10 +325,13 @@ class TtuHook(BaseHook, LoggingMixin):
         tdload_command += ['-d'] + [delimiter]
         tdload_command += ['-L'] + [log_path]
         tdload_command += ['-r'] + [checkpoint_path]
+        tdload_command += ['-R'] + [str(restart_limit)]
         tdload_command += ['--TargetMaxSessions'] + [str(max_sessions)]
         if working_database:
             tdload_command += ['--TargetWorkingDatabase'] + [working_database]
-        tdload_command += [ "%s_%s" % (job_name, uuid.uuid1()) ] #Job Name
+        if debug:
+            tdload_command += ['-x']
+        tdload_command += [ "%s_%s" % (job_name, uuid.uuid4().hex) ] #Job Name
         return tdload_command
 
     @staticmethod

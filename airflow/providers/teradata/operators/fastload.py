@@ -93,6 +93,8 @@ class FastLoadOperator(BaseOperator):
                             encoding=self.encoding,
                             xcom_push_flag=self.xcom_push,
                             raise_on_rows_error=self.raise_on_rows_error,
-                            raise_on_rows_duplicated=self.raise_on_rows_duplicated)
+                            raise_on_rows_duplicated=self.raise_on_rows_duplicated,
+                            debug=self.debug
+                            )
     def on_kill(self):
         self._hook.on_kill()
