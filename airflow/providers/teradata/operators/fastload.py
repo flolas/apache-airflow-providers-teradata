@@ -58,6 +58,8 @@ class FastLoadOperator(BaseOperator):
     raise_on_rows_duplicated: bool = True,
     xcom_push: bool = True,
     ttu_conn_id: str = 'ttu_default',
+    max_sessions: Optional[int] = 1,
+    debug: Optional[bool] = False,
     **kwargs,
     ) -> None:
         super().__init__(**kwargs)
@@ -72,6 +74,8 @@ class FastLoadOperator(BaseOperator):
         self.preoperator_bteq = preoperator_bteq
         self.raise_on_rows_error = raise_on_rows_error
         self.raise_on_rows_duplicated = raise_on_rows_duplicated
+        self.max_sessions = max_sessions
+        self.debug = debug
 
     def execute(self, context):
         """
@@ -94,7 +98,8 @@ class FastLoadOperator(BaseOperator):
                             xcom_push_flag=self.xcom_push,
                             raise_on_rows_error=self.raise_on_rows_error,
                             raise_on_rows_duplicated=self.raise_on_rows_duplicated,
-                            debug=self.debug
+                            debug=self.debug,
+                            max_sessions=self.max_sessions
                             )
     def on_kill(self):
         self._hook.on_kill()

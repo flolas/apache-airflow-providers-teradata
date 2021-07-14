@@ -60,7 +60,6 @@ class TtuHook(BaseHook, LoggingMixin):
                 password=connection.password,
                 host=connection.host,
                 ttu_log_folder=extras.get('ttu_log_folder', conf.get('logging', 'BASE_LOG_FOLDER')),
-                ttu_max_sessions=extras.get('ttu_max_sessions', 1),
                 console_output_encoding=extras.get('console_output_encoding', 'utf-8'),
                 bteq_session_encoding=extras.get('bteq_session_encoding', 'ASCII'),
                 bteq_output_width=extras.get('bteq_output_width', 65531),
@@ -125,7 +124,7 @@ class TtuHook(BaseHook, LoggingMixin):
                 if xcom_push_flag:
                     return line
 
-    def execute_tdload(self, input_file, table, delimiter=';', working_database=None, encoding='UTF8', xcom_push_flag=False, raise_on_rows_error=False, raise_on_rows_duplicated=False, debug=False, restart_limit=0):
+    def execute_tdload(self, input_file, table, delimiter=';', working_database=None, encoding='UTF8', xcom_push_flag=False, raise_on_rows_error=False, raise_on_rows_duplicated=False, debug=False, max_sessions=1, restart_limit=0):
         """
         Load a CSV file to Teradata Table (previously created) using tdload binary.
         Note: You need to strip header of the CSV. tdload only accepts rows, not header.
@@ -160,7 +159,7 @@ class TtuHook(BaseHook, LoggingMixin):
                             delimiter,
                             fload_out_path,
                             fload_checkpoint_path,
-                            conn['ttu_max_sessions'],
+                            max_sessions,
                             working_database,
                             debug,
                             restart_limit
@@ -203,7 +202,7 @@ class TtuHook(BaseHook, LoggingMixin):
             return line
 
 
-    def execute_tptexport(self, sql, output_file, delimiter = ';', encoding='UTF8', spool_mode='SPOOL', xcom_push_flag=False, double_quote_varchar=True):
+    def execute_tptexport(self, sql, output_file, delimiter = ';', encoding='UTF8', spool_mode='SPOOL', xcom_push_flag=False, double_quote_varchar=True, max_sessions=1):
         """
         Export a table from Teradata Table using tpt binary.
         Note: The exported CSV file does not contains header row
@@ -241,7 +240,7 @@ class TtuHook(BaseHook, LoggingMixin):
                                         conn['host'],
                                         conn['login'],
                                         conn['password'],
-                                        conn['ttu_max_sessions'],
+                                        max_sessions,
                                         ), 'utf_8'))
                 f.flush()
                 fname = f.name
