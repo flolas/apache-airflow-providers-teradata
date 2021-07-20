@@ -59,7 +59,7 @@ class TtuHook(BaseHook, LoggingMixin):
                 login=connection.login,
                 password=connection.password,
                 host=connection.host,
-                ttu_log_folder=extras.get('ttu_log_folder', conf.get('logging', 'BASE_LOG_FOLDER')),
+                ttu_log_folder=extras.get('ttu_log_folder', '/tmp'),
                 console_output_encoding=extras.get('console_output_encoding', 'utf-8'),
                 bteq_session_encoding=extras.get('bteq_session_encoding', 'ASCII'),
                 bteq_output_width=extras.get('bteq_output_width', 65531),
@@ -336,7 +336,7 @@ class TtuHook(BaseHook, LoggingMixin):
         return tdload_command
 
     @staticmethod
-    def _prepare_tpt_export_script(sql, output_file, encoding, delimiter, spool_mode, host, login, password, max_sessions, job_name= 'airflow_tptexport',block_size) -> str:
+    def _prepare_tpt_export_script(sql, output_file, encoding, delimiter, spool_mode, host, login, password, max_sessions, block_size,job_name= 'airflow_tptexport') -> str:
         """
         Prepare a tpt script file with connection parameters for exporting data to CSV
         :param sql : SQL sentence to export
@@ -351,6 +351,9 @@ class TtuHook(BaseHook, LoggingMixin):
         :param block_size : specifies the block size to use when returning data to the client. The minimum is 256 bytes. The default is 1048472 bytes. The maximum is 16775168 bytes.
         :param job_name : job name
         """
+        option_max_sessions = 'MaxSessions = {max_sessions},'.format(max_sessions=max_sessions)
+        if max_sessions == -1:
+            option_max_sessions = ''
         return '''
             USING CHARACTER SET {encoding}
             DEFINE JOB {job_name}
@@ -379,13 +382,13 @@ class TtuHook(BaseHook, LoggingMixin):
                                     UserPassword = '{password}',
                                     SelectStmt = '{sql}',
                                     TdpId = '{host}',
-                                    MaxSessions = {max_sessions},
+                                    {option_max_sessions}
                                     SpoolMode = '{spool_mode}',
                                     BlockSize = '{block_size}'
                             )
                     );
             );
             '''.format(filename=output_file, encoding=encoding, delimiter=delimiter, username=login,
-                       password=password, sql=sql, host=host, max_sessions=max_sessions, job_name = job_name, spool_mode=spool_mode,block_size=block_size)
+                       password=password, sql=sql, host=host, option_max_sessions=option_max_sessions, job_name = job_name, spool_mode=spool_mode,block_size=block_size)
 
 
