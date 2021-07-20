@@ -44,6 +44,7 @@ class FastExportOperator(BaseOperator):
         xcom_push: bool = True,
         ttu_conn_id: str = 'ttu_default',
         max_sessions: Optional[int] = 1,
+        block_size: Optional[int] = 1048472
         **kwargs,
     ) -> None:
         super().__init__(**kwargs)
@@ -56,6 +57,7 @@ class FastExportOperator(BaseOperator):
         self._hook = None
         self.ttu_conn_id = ttu_conn_id
         self.max_sessions = max_sessions
+        self.block_size = block_size
 
     def execute(self, context):
         """
@@ -68,7 +70,8 @@ class FastExportOperator(BaseOperator):
                             encoding=self.encoding,
                             spool_mode=self.spool_mode,
                             xcom_push_flag=self.xcom_push,
-                            max_sessions=self.max_sessions
+                            max_sessions=self.max_sessions,
+                            block_size=self.block_size
                             )
     def on_kill(self):
         self._hook.on_kill()

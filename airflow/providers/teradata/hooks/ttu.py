@@ -202,7 +202,7 @@ class TtuHook(BaseHook, LoggingMixin):
             return line
 
 
-    def execute_tptexport(self, sql, output_file, delimiter = ';', encoding='UTF8', spool_mode='SPOOL', xcom_push_flag=False, double_quote_varchar=True, max_sessions=1):
+    def execute_tptexport(self, sql, output_file, delimiter = ';', encoding='UTF8', spool_mode='SPOOL', xcom_push_flag=False, double_quote_varchar=True, max_sessions=1,block_size=1048472):
         """
         Export a table from Teradata Table using tpt binary.
         Note: The exported CSV file does not contains header row
@@ -211,6 +211,7 @@ class TtuHook(BaseHook, LoggingMixin):
         :param encoding : encoding of the file to load
         :param table : output table
         :param max_sessions : max sessions to use
+        :param block_size : specifies the block size to use when returning data to the client. The minimum is 256 bytes. The default is 1048472 bytes. The maximum is 16775168 bytes.
         :param spool_mode : ref https://docs.teradata.com/reader/tRbhWsU75TDpkqzyEZReyA/2gbczYmS~PRXRVKD0Dngtg
         :param xcom_push_flag: flag for pushing last line of BTEQ Log to XCom
         :param double_quote_varchar: if true, replace quotes with escaping char for Teradata SQL in TPT
@@ -241,6 +242,7 @@ class TtuHook(BaseHook, LoggingMixin):
                                         conn['login'],
                                         conn['password'],
                                         max_sessions,
+                                        block_size,
                                         ), 'utf_8'))
                 f.flush()
                 fname = f.name
@@ -334,7 +336,7 @@ class TtuHook(BaseHook, LoggingMixin):
         return tdload_command
 
     @staticmethod
-    def _prepare_tpt_export_script(sql, output_file, encoding, delimiter, spool_mode, host, login, password, max_sessions, job_name= 'airflow_tptexport') -> str:
+    def _prepare_tpt_export_script(sql, output_file, encoding, delimiter, spool_mode, host, login, password, max_sessions, job_name= 'airflow_tptexport',block_size) -> str:
         """
         Prepare a tpt script file with connection parameters for exporting data to CSV
         :param sql : SQL sentence to export
@@ -346,6 +348,7 @@ class TtuHook(BaseHook, LoggingMixin):
         :param login : username for login
         :param password : password for login
         :param max_sessions : how many sessions we use for loading data
+        :param block_size : specifies the block size to use when returning data to the client. The minimum is 256 bytes. The default is 1048472 bytes. The maximum is 16775168 bytes.
         :param job_name : job name
         """
         return '''
@@ -377,11 +380,12 @@ class TtuHook(BaseHook, LoggingMixin):
                                     SelectStmt = '{sql}',
                                     TdpId = '{host}',
                                     MaxSessions = {max_sessions},
-                                    SpoolMode = '{spool_mode}'
+                                    SpoolMode = '{spool_mode}',
+                                    BlockSize = '{block_size}'
                             )
                     );
             );
             '''.format(filename=output_file, encoding=encoding, delimiter=delimiter, username=login,
-                       password=password, sql=sql, host=host, max_sessions=max_sessions, job_name = job_name, spool_mode=spool_mode)
+                       password=password, sql=sql, host=host, max_sessions=max_sessions, job_name = job_name, spool_mode=spool_mode,block_size=block_size)
 
 
