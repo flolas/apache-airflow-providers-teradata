@@ -44,7 +44,7 @@ class FastExportOperator(BaseOperator):
         xcom_push: bool = True,
         ttu_conn_id: str = 'ttu_default',
         max_sessions: Optional[int] = 1,
-        block_size: Optional[int] = 1048472
+        block_size: Optional[int] = 1048472,
         **kwargs,
     ) -> None:
         super().__init__(**kwargs)
