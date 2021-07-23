@@ -384,7 +384,7 @@ class TtuHook(BaseHook, LoggingMixin):
                                     TdpId = '{host}',
                                     {option_max_sessions}
                                     SpoolMode = '{spool_mode}',
-                                    BlockSize = '{block_size}'
+                                    BlockSize = {block_size}
                             )
                     );
             );
